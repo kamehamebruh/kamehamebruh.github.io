@@ -41,6 +41,14 @@
                 <p class="mt-4 text-gray-500 text-sm">正在生成 Sans 的像素圖...</p>
             </div>
         </div>
+        
+        <!-- 新增: 圖像重試按鈕 -->
+        <div class="flex justify-center mb-8">
+            <button id="retry-btn" onclick="generateImage()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out disabled:opacity-50">
+                重新生成圖像
+            </button>
+        </div>
+
 
         <!-- 大標題 (強制換行成兩行) -->
         <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6 text-center leading-tight">
@@ -74,6 +82,7 @@
     <script type="module">
         const imageContainer = document.getElementById('dynamic-image-container');
         const errorMessage = document.getElementById('error-message');
+        const retryBtn = document.getElementById('retry-btn'); // 取得新的按鈕元素
 
         // 提示詞 (Prompt) 描述：Sans 吹奏全黃色長號的 Undertale 風格像素圖
         const userPrompt = "A colored, 8-bit style pixel art image of the character Sans from the game Undertale. Sans is a skeleton wearing a blue hoodie. He is depicted playing a solid yellow trombone. The style must strictly adhere to the original Undertale pixel art aesthetic. The image should have a pure white background.";
@@ -103,8 +112,10 @@
         async function generateImage() {
             // 1. 顯示載入狀態
             imageContainer.innerHTML = `<div class="loading-spinner"></div><p class="mt-4 text-gray-500 text-sm">正在生成 Sans 的像素圖...</p>`;
-            imageContainer.classList.add('bg-gray-50');
+            imageContainer.classList.add('bg-gray-50', 'min-h-[350px]', 'flex-col');
             errorMessage.classList.add('hidden');
+            retryBtn.disabled = true; // 生成時禁用按鈕
+            retryBtn.textContent = '生成中...'; // 更新按鈕文字
 
             const payload = { 
                 instances: [{ prompt: userPrompt }], 
@@ -136,9 +147,7 @@
                         />
                     `;
                     // 移除背景和最小高度限制，讓圖片決定容器大小
-                    imageContainer.classList.remove('bg-gray-50', 'min-h-[350px]');
-                    // 恢復flex-col，讓圖片居中
-                    imageContainer.classList.remove('flex-col');
+                    imageContainer.classList.remove('bg-gray-50', 'min-h-[350px]', 'flex-col');
                 } else {
                     throw new Error("API 返回的數據結構錯誤或沒有圖片數據。");
                 }
@@ -147,6 +156,10 @@
                 errorMessage.textContent = '圖像生成失敗，請稍後再試。';
                 errorMessage.classList.remove('hidden');
                 imageContainer.innerHTML = `<p class="text-red-500">無法載入圖像</p>`;
+            } finally {
+                // 5. 無論成功或失敗，都恢復按鈕狀態
+                retryBtn.disabled = false;
+                retryBtn.textContent = '重新生成圖像';
             }
         }
 
