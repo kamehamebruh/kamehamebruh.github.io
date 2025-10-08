@@ -1,42 +1,68 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>我的個人網站</title>
-  <style>
-    body {
-      font-family: "Helvetica Neue", sans-serif;
-      background-color: #fdfdfd;
-      color: #333;
-      margin: 0;
-      padding: 2em;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 2em;
-    }
-    img.avatar {
-      width: 150px;
-      border-radius: 50%;
-      margin-bottom: 1em;
-    }
-    .intro {
-      max-width: 600px;
-      margin: 0 auto;
-      text-align: justify;
-      line-height: 1.6;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undertale 玩家介紹 (含靜態圖片)</title>
+    <!-- 載入 Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 使用 Inter 字體 */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* 淺灰色背景 */
+        }
+        /* 載入動畫樣式已移除 */
+    </style>
 </head>
-<body>
-  <header>
-    <img src="https://copilot.microsoft.com/th/id/BCO.0c008d3a-b439-4d39-ad6b-2dfd1b5d6c9d.png" alt="Undertale角色頭像" class="avatar">
-    <h1>你好，我是熱愛遊戲的玩家</h1>
-  </header>
+<body class="p-4 sm:p-8 flex items-center justify-center min-h-screen">
 
-  <section class="intro">
-    <p>我喜歡探索各種獨立遊戲，其中《Undertale》是我最喜歡的一款。它不僅有獨特的角色設計，還融合了幽默與感動的劇情，讓人難以忘懷。每一次選擇都影響故事走向，是一場真正的心靈冒險。</p>
-  </section>
+    <!-- 主內容卡片 -->
+    <div class="max-w-4xl w-full bg-white shadow-2xl rounded-xl p-6 sm:p-10 border-t-8 border-indigo-600">
+
+        <!-- 圖片展示區 (靜態圖片) -->
+        <div class="my-8 flex justify-center">
+            <!-- 靜態圖片佔位符，您可以替換為最終的 Sans 像素圖 URL -->
+            <img 
+                src="https://placehold.co/400x350/000000/F0F0F0?text=Sans+Pixel+Art+with+Yellow+Trombone" 
+                alt="Sans 吹全黃長號的 Undertale 風格像素圖" 
+                class="max-h-96 w-auto rounded-lg shadow-xl object-contain border-4 border-gray-100 transition duration-300 hover:shadow-indigo-300 p-4"
+            />
+        </div>
+        
+        <!-- 圖像重試按鈕已移除 -->
+
+
+        <!-- 大標題 (強制換行成兩行) -->
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6 text-center leading-tight">
+            huh. always wondered why people never use<br>their strongest attack first.
+        </h1>
+        
+        <!-- 分隔線 -->
+        <hr class="my-10 border-t-2 border-indigo-200">
+
+        <!-- 小標題與自我介紹 -->
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-indigo-600 mb-4">
+                ⭐ 自我介紹：一個熱愛地下世界的靈魂 ⭐
+            </h2>
+        </div>
+
+        <div class="text-lg text-gray-700 leading-relaxed space-y-4">
+            <!-- 自我介紹正文 -->
+            <p>
+                大家好！我是這個 ID 背後，一個對 **Undertale** 瘋狂著迷的玩家。對我來說，這款遊戲早已超越了「遊戲」的範疇，它是一部充滿哲學思辨和溫暖情感的藝術品。我第一次踏入地下世界時，就被 Toby Fox 精心編織的故事和獨特的戰鬥系統深深吸引。它打破了傳統 RPG 的「殺怪升級」邏輯，讓我意識到每一次選擇——無論是**仁慈**還是**戰鬥**——都會對整個世界產生真實而沉重的影響。這種**選擇的重量**是其他遊戲難以比擬的。
+            </p>
+            <p>
+                我最喜歡的角色非 **Sans** 莫屬。他那種看似懶散卻又深藏不露的神秘感和冷幽默總能讓我又愛又怕，而他在「審判」中的獨白更是震撼人心。當然，還有總是充滿希望的 **Papyrus** 和給予玩家最初溫暖的 **Toriel**，他們共同構成了這個世界的靈魂，讓人無法不愛。我熱衷於探索遊戲的多重結局，尤其是**和平線**帶來的感動與治癒，讓我久久不能忘懷。Undertale 不只是一款遊戲，它提醒了我，即使面對絕望，我們也永遠有選擇善良的權利，並相信每一個靈魂都能帶來改變。期待在這裡遇到更多同樣被這款遊戲感動的朋友，一起分享那些動人的瞬間和隱藏的秘密！
+            </p>
+            <!-- 錯誤訊息提示區已移除 -->
+        </div>
+
+    </div>
+
+    <!-- JavaScript 腳本區已移除 -->
+
 </body>
 </html>
