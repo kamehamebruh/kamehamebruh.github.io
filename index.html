@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>個人簡介與圖片展示</title>
+    <title>Undertale 玩家介紹 (含動態圖片)</title>
     <!-- 載入 Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -13,6 +13,19 @@
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6; /* 淺灰色背景 */
         }
+        /* 載入動畫樣式 */
+        .loading-spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #6366f1; /* Indigo color */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="p-4 sm:p-8 flex items-center justify-center min-h-screen">
@@ -20,22 +33,20 @@
     <!-- 主內容卡片 -->
     <div class="max-w-4xl w-full bg-white shadow-2xl rounded-xl p-6 sm:p-10 border-t-8 border-indigo-600">
 
-        <!-- 大標題 -->
-        <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6 text-center leading-tight">
-            huh. always wondered why people never use their strongest attack first.
-        </h1>
-        
         <!-- 圖片展示區 -->
         <div class="my-8 flex justify-center">
-            <!-- 圖片會自動從上傳的檔案中載入 -->
-            <img 
-                src="uploaded:下載.png-fe5eaa5a-3eb1-4735-84c9-826b0e3e7553" 
-                alt="用戶上傳的圖片" 
-                class="max-h-96 w-auto rounded-lg shadow-xl object-contain border-4 border-gray-100 transition duration-300 hover:shadow-indigo-300"
-                onerror="this.onerror=null;this.src='https://placehold.co/400x300/a3a3a3/ffffff?text=圖片載入失敗';"
-            />
+            <!-- 圖片將在此動態載入 -->
+            <div id="dynamic-image-container" class="max-h-96 w-full sm:w-auto flex flex-col items-center justify-center min-h-[350px] rounded-lg shadow-xl border-4 border-gray-100 bg-gray-50 transition duration-300">
+                <div class="loading-spinner"></div>
+                <p class="mt-4 text-gray-500 text-sm">正在生成 Sans 的像素圖...</p>
+            </div>
         </div>
 
+        <!-- 大標題 (強制換行成兩行) -->
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6 text-center leading-tight">
+            huh. always wondered why people never use<br>their strongest attack first.
+        </h1>
+        
         <!-- 分隔線 -->
         <hr class="my-10 border-t-2 border-indigo-200">
 
@@ -54,9 +65,93 @@
             <p>
                 我最喜歡的角色非 **Sans** 莫屬。他那種看似懶散卻又深藏不露的神秘感和冷幽默總能讓我又愛又怕，而他在「審判」中的獨白更是震撼人心。當然，還有總是充滿希望的 **Papyrus** 和給予玩家最初溫暖的 **Toriel**，他們共同構成了這個世界的靈魂，讓人無法不愛。我熱衷於探索遊戲的多重結局，尤其是**和平線**帶來的感動與治癒，讓我久久不能忘懷。Undertale 不只是一款遊戲，它提醒了我，即使面對絕望，我們也永遠有選擇善良的權利，並相信每一個靈魂都能帶來改變。期待在這裡遇到更多同樣被這款遊戲感動的朋友，一起分享那些動人的瞬間和隱藏的秘密！
             </p>
+            <!-- 錯誤訊息提示區 -->
+            <p id="error-message" class="text-red-500 mt-4 text-center font-bold hidden"></p>
         </div>
 
     </div>
 
+    <script type="module">
+        const imageContainer = document.getElementById('dynamic-image-container');
+        const errorMessage = document.getElementById('error-message');
+
+        // 提示詞 (Prompt) 描述：Sans 吹奏全黃色長號的 Undertale 風格像素圖
+        const userPrompt = "A colored, 8-bit style pixel art image of the character Sans from the game Undertale. Sans is a skeleton wearing a blue hoodie. He is depicted playing a solid yellow trombone. The style must strictly adhere to the original Undertale pixel art aesthetic. The image should have a pure white background.";
+        const apiKey = "";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+
+        /**
+         * 以指數退避機制重試 API 請求
+         * @param {Function} fetcher - 執行 API 請求的函數
+         * @param {number} retries - 剩餘重試次數
+         * @param {number} delay - 當前延遲時間 (毫秒)
+         */
+        async function fetchWithRetry(fetcher, retries = 3, delay = 1000) {
+            try {
+                return await fetcher();
+            } catch (error) {
+                if (retries > 0) {
+                    console.warn(`API 請求失敗，正在重試... (${retries} 次剩餘)`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    // 延遲時間加倍
+                    return fetchWithRetry(fetcher, retries - 1, delay * 2);
+                }
+                throw error;
+            }
+        }
+
+        async function generateImage() {
+            // 1. 顯示載入狀態
+            imageContainer.innerHTML = `<div class="loading-spinner"></div><p class="mt-4 text-gray-500 text-sm">正在生成 Sans 的像素圖...</p>`;
+            imageContainer.classList.add('bg-gray-50');
+            errorMessage.classList.add('hidden');
+
+            const payload = { 
+                instances: [{ prompt: userPrompt }], 
+                parameters: { "sampleCount": 1 } 
+            };
+
+            const fetcher = () => fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            try {
+                // 2. 執行 API 請求
+                const response = await fetchWithRetry(fetcher);
+                const result = await response.json();
+
+                // 3. 處理響應
+                if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+                    const base64Data = result.predictions[0].bytesBase64Encoded;
+                    const imageUrl = `data:image/png;base64,${base64Data}`;
+                    
+                    // 4. 顯示圖片
+                    imageContainer.innerHTML = `
+                        <img 
+                            src="${imageUrl}" 
+                            alt="AI 生成的 Sans 像素藝術 (全黃長號)" 
+                            class="max-h-96 w-auto rounded-lg shadow-xl object-contain p-4 transition duration-300 hover:shadow-indigo-300"
+                        />
+                    `;
+                    // 移除背景和最小高度限制，讓圖片決定容器大小
+                    imageContainer.classList.remove('bg-gray-50', 'min-h-[350px]');
+                    // 恢復flex-col，讓圖片居中
+                    imageContainer.classList.remove('flex-col');
+                } else {
+                    throw new Error("API 返回的數據結構錯誤或沒有圖片數據。");
+                }
+            } catch (error) {
+                console.error('圖像生成失敗:', error);
+                errorMessage.textContent = '圖像生成失敗，請稍後再試。';
+                errorMessage.classList.remove('hidden');
+                imageContainer.innerHTML = `<p class="text-red-500">無法載入圖像</p>`;
+            }
+        }
+
+        // 首次載入時自動生成圖片
+        window.onload = generateImage;
+    </script>
 </body>
 </html>
