@@ -1,42 +1,184 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>我的個人網站</title>
-  <style>
-    body {
-      font-family: "Helvetica Neue", sans-serif;
-      background-color: #fdfdfd;
-      color: #333;
-      margin: 0;
-      padding: 2em;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 2em;
-    }
-    img.avatar {
-      width: 150px;
-      border-radius: 50%;
-      margin-bottom: 1em;
-    }
-    .intro {
-      max-width: 600px;
-      margin: 0 auto;
-      text-align: justify;
-      line-height: 1.6;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undertale 玩家介紹 (動態生成)</title>
+    <!-- 載入 Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 使用 Inter 字體 */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* 淺灰色背景 */
+        }
+        /* 載入動畫樣式 */
+        .loading-spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #6366f1; /* Indigo color */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-<body>
-  <header>
-    <img src="https://copilot.microsoft.com/th/id/BCO.0c008d3a-b439-4d39-ad6b-2dfd1b5d6c9d.png" alt="Undertale角色頭像" class="avatar">
-    <h1>你好，我是熱愛遊戲的玩家</h1>
-  </header>
+<body class="p-4 sm:p-8 flex items-center justify-center min-h-screen">
 
-  <section class="intro">
-    <p>我喜歡探索各種獨立遊戲，其中《Undertale》是我最喜歡的一款。它不僅有獨特的角色設計，還融合了幽默與感動的劇情，讓人難以忘懷。每一次選擇都影響故事走向，是一場真正的心靈冒險。</p>
-  </section>
+    <!-- 主內容卡片 -->
+    <div class="max-w-4xl w-full bg-white shadow-2xl rounded-xl p-6 sm:p-10 border-t-8 border-indigo-600">
+
+        <!-- 圖片展示區 -->
+        <div class="my-8 flex justify-center">
+            <!-- 圖片將在此動態載入 -->
+            <div id="dynamic-image-container" class="max-h-96 w-full sm:w-auto flex flex-col items-center justify-center min-h-[350px] rounded-lg shadow-xl border-4 border-gray-100 bg-gray-50 transition duration-300">
+                <div class="loading-spinner"></div>
+                <p class="mt-4 text-gray-500 text-sm">正在生成 Sans 的像素圖...</p>
+            </div>
+        </div>
+        
+        <!-- 重新生成按鈕 -->
+        <div class="flex justify-center mb-8">
+            <button id="retry-btn" onclick="generateImage()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out disabled:opacity-50">
+                重新生成圖像
+            </button>
+        </div>
+
+        <!-- 大標題 (強制換行成兩行) -->
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6 text-center leading-tight">
+            huh. always wondered why people never use<br>their strongest attack first.
+        </h1>
+        
+        <!-- 分隔線 -->
+        <hr class="my-10 border-t-2 border-indigo-200">
+
+        <!-- 小標題與自我介紹 -->
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-indigo-600 mb-4">
+                ⭐ 自我介紹：一個熱愛地下世界的靈魂 ⭐
+            </h2>
+        </div>
+
+        <div class="text-lg text-gray-700 leading-relaxed space-y-4">
+            <!-- 自我介紹正文 -->
+            <p>
+                大家好！我是這個 ID 背後，一個對 **Undertale** 瘋狂著迷的玩家。對我來說，這款遊戲早已超越了「遊戲」的範疇，它是一部充滿哲學思辨和溫暖情感的藝術品。我第一次踏入地下世界時，就被 Toby Fox 精心編織的故事和獨特的戰鬥系統深深吸引。它打破了傳統 RPG 的「殺怪升級」邏輯，讓我意識到每一次選擇——無論是**仁慈**還是**戰鬥**——都會對整個世界產生真實而沉重的影響。這種**選擇的重量**是其他遊戲難以比擬的。
+            </p>
+            <p>
+                我最喜歡的角色非 **Sans** 莫屬。他那種看似懶散卻又深藏不露的神秘感和冷幽默總能讓我又愛又怕，而他在「審判」中的獨白更是震撼人心。當然，還有總是充滿希望的 **Papyrus** 和給予玩家最初溫暖的 **Toriel**，他們共同構成了這個世界的靈魂，讓人無法不愛。我熱衷於探索遊戲的多重結局，尤其是**和平線**帶來的感動與治癒，讓我久久不能忘懷。Undertale 不只是一款遊戲，它提醒了我，即使面對絕望，我們也永遠有選擇善良的權利，並相信每一個靈魂都能帶來改變。期待在這裡遇到更多同樣被這款遊戲感動的朋友，一起分享那些動人的瞬間和隱藏的秘密！
+            </p>
+            <!-- 錯誤訊息提示區 -->
+            <p id="error-message" class="text-red-500 mt-4 text-center font-bold hidden"></p>
+        </div>
+
+    </div>
+
+    <script type="module">
+        const imageContainer = document.getElementById('dynamic-image-container');
+        const errorMessage = document.getElementById('error-message');
+        const retryBtn = document.getElementById('retry-btn'); 
+
+        // 備用靜態圖片 (全黃長號像素圖風格的佔位符)
+        const FALLBACK_IMAGE_URL = "https://placehold.co/400x350/000000/F0F0F0?text=Sans+Pixel+Art+Failure+Backup";
+
+        // 提示詞 (Prompt) 描述
+        const userPrompt = "A colored, 8-bit style pixel art image of the character Sans from the game Undertale. Sans is a skeleton wearing a blue hoodie. He is depicted playing a solid yellow trombone. The style must strictly adhere to the original Undertale pixel art aesthetic. The image should have a pure white background.";
+        const apiKey = "";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+
+        /**
+         * 以指數退避機制重試 API 請求
+         */
+        async function fetchWithRetry(fetcher, retries = 3, delay = 1000) {
+            try {
+                return await fetcher();
+            } catch (error) {
+                if (retries > 0) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return fetchWithRetry(fetcher, retries - 1, delay * 2);
+                }
+                throw error;
+            }
+        }
+
+        function displayImage(imageUrl) {
+            imageContainer.innerHTML = `
+                <img 
+                    src="${imageUrl}" 
+                    alt="AI 生成的 Sans 像素藝術" 
+                    class="max-h-96 w-auto rounded-lg shadow-xl object-contain p-4 transition duration-300 hover:shadow-indigo-300"
+                />
+            `;
+            // 移除背景和最小高度限制，讓圖片決定容器大小
+            imageContainer.classList.remove('bg-gray-50', 'min-h-[350px]', 'flex-col');
+        }
+
+        function displayError(message, useFallback = false) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+            retryBtn.disabled = false;
+            retryBtn.textContent = '重新生成圖像';
+
+            if (useFallback) {
+                 // 發生錯誤時，顯示備用圖片
+                 displayImage(FALLBACK_IMAGE_URL);
+                 // 調整錯誤訊息
+                 errorMessage.textContent = '圖像自動生成失敗，已切換至備用圖片。您可以點擊按鈕手動重試。';
+            } else {
+                 imageContainer.innerHTML = `<p class="text-red-500">生成失敗</p>`;
+            }
+        }
+
+        async function generateImage() {
+            // 1. 顯示載入狀態
+            imageContainer.innerHTML = `<div class="loading-spinner"></div><p class="mt-4 text-gray-500 text-sm">正在生成 Sans 的像素圖...</p>`;
+            imageContainer.classList.add('bg-gray-50', 'min-h-[350px]', 'flex-col');
+            errorMessage.classList.add('hidden');
+            retryBtn.disabled = true; 
+            retryBtn.textContent = '生成中...'; 
+
+            const payload = { 
+                instances: [{ prompt: userPrompt }], 
+                parameters: { "sampleCount": 1 } 
+            };
+
+            const fetcher = () => fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            try {
+                // 2. 執行 API 請求
+                const response = await fetchWithRetry(fetcher);
+                const result = await response.json();
+
+                // 3. 處理響應
+                if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+                    const base64Data = result.predictions[0].bytesBase64Encoded;
+                    const imageUrl = `data:image/png;base64,${base64Data}`;
+                    displayImage(imageUrl);
+                } else {
+                    throw new Error("API 返回的數據結構錯誤或沒有圖片數據。");
+                }
+            } catch (error) {
+                console.error('圖像生成失敗:', error);
+                // 發生錯誤時，切換到備用圖片 (方案一)
+                displayError('圖像生成失敗', true); 
+            } finally {
+                // 5. 恢復按鈕狀態
+                retryBtn.disabled = false;
+                retryBtn.textContent = '重新生成圖像';
+            }
+        }
+
+        // 首次載入時自動生成圖片
+        window.onload = generateImage;
+    </script>
 </body>
 </html>
